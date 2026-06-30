@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vellum — Digital Atelier</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:#0D0D0D;
+  --ink2:#1A1A1A;
+  --ink3:#2A2A2A;
+  --gold:#C9A96E;
+  --gold-dim:#8C7150;
+  --chalk:#F5F2EE;
+  --chalk2:#EAE6E0;
+  --mist:#9A9690;
+  --rule:rgba(201,169,110,0.18);
+  --rule2:rgba(201,169,110,0.08);
+  --ff-display:'DM Serif Display',Georgia,serif;
+  --ff-body:'DM Sans',system-ui,sans-serif;
+  --ff-mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--chalk);font-family:var(--ff-body);font-size:15px;line-height:1.65;overflow-x:hidden;}
+
+/* GLOBAL RULE SYSTEM */
+.rule-h{height:1px;background:var(--rule);width:100%;}
+.rule-v{width:1px;background:var(--rule);align-self:stretch;}
+
+/* NAV */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:64px;
+  border-bottom:1px solid var(--rule);
+  background:rgba(13,13,13,0.92);
+  backdrop-filter:blur(16px);
+}
+.nav-wordmark{font-family:var(--ff-display);font-size:22px;letter-spacing:-0.5px;color:var(--chalk);}
+.nav-wordmark em{color:var(--gold);font-style:normal;}
+.nav-items{display:flex;align-items:center;gap:36px;}
+.nav-link{font-size:13px;font-weight:400;color:var(--mist);text-decoration:none;letter-spacing:0.3px;transition:color 0.2s;}
+.nav-link:hover{color:var(--chalk);}
+.nav-cta{
+  font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--ink);background:var(--gold);
+  border:none;padding:9px 22px;cursor:pointer;
+  font-family:var(--ff-body);
+  transition:all 0.2s;
+}
+.nav-cta:hover{background:var(--chalk);transform:translateY(-1px);}
+
+/* HERO */
+.hero{
+  min-height:100vh;padding-top:64px;
+  display:grid;grid-template-rows:1fr auto;
+  position:relative;overflow:hidden;
+}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--rule);
+}
+.hero-left{
+  padding:80px 48px 64px;
+  border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.hero-eyebrow{
+  display:flex;align-items:center;gap:12px;
+  font-size:11px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:48px;
+}
+.eyebrow-line{width:32px;height:1px;background:var(--gold);}
+.hero-h1{
+  font-family:var(--ff-display);
+  font-size:clamp(52px,6.5vw,84px);
+  line-height:1.0;
+  letter-spacing:-1px;
+  color:var(--chalk);
+  margin-bottom:32px;
+}
+.hero-h1 .italic{font-style:italic;color:var(--gold);}
+.hero-body{
+  font-size:17px;color:var(--mist);
+  max-width:420px;line-height:1.75;
+  margin-bottom:48px;font-weight:300;
+}
+.hero-actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.btn-gold{
+  font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--ink);background:var(--gold);
+  border:none;padding:14px 32px;cursor:pointer;
+  font-family:var(--ff-body);transition:all 0.2s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-gold:hover{background:var(--chalk);}
+.btn-ghost{
+  font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;
+  color:var(--mist);background:none;
+  border:1px solid var(--rule);padding:14px 28px;cursor:pointer;
+  font-family:var(--ff-body);transition:all 0.2s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-ghost:hover{border-color:var(--gold-dim);color:var(--chalk);}
+
+.hero-right{
+  display:flex;flex-direction:column;
+  padding:0;overflow:hidden;
+}
+.hero-stat-stack{
+  display:flex;flex-direction:column;flex:1;
+}
+.hero-stat{
+  flex:1;
+  padding:32px 40px;
+  border-bottom:1px solid var(--rule);
+  display:flex;flex-direction:column;justify-content:center;
+  transition:background 0.3s;cursor:default;
+}
+.hero-stat:last-child{border-bottom:none;}
+.hero-stat:hover{background:rgba(201,169,110,0.04);}
+.stat-val{
+  font-family:var(--ff-display);
+  font-size:52px;line-height:1;
+  color:var(--chalk);margin-bottom:4px;
+}
+.stat-val em{font-style:normal;color:var(--gold);}
+.stat-key{font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--mist);}
+
+/* TICKER */
+.hero-ticker{
+  padding:18px 48px;
+  border-top:1px solid var(--rule);
+  display:flex;align-items:center;gap:24px;
+  overflow:hidden;
+}
+.ticker-label{
+  font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--gold);white-space:nowrap;flex-shrink:0;
+  display:flex;align-items:center;gap:8px;
+}
+.ticker-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 1.8s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.ticker-track-wrap{overflow:hidden;flex:1;}
+.ticker-track{display:flex;gap:0;animation:tickerScroll 22s linear infinite;width:max-content;}
+.ticker-item{
+  font-family:var(--ff-mono);font-size:12px;
+  color:var(--mist);padding:0 32px 0 0;
+  white-space:nowrap;
+}
+.ticker-item span{color:var(--gold-dim);margin-right:8px;}
+@keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* CLIENTS */
+.clients{
+  padding:56px 48px;
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;gap:48px;
+  flex-wrap:wrap;
+}
+.clients-label{
+  font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--gold-dim);white-space:nowrap;
+}
+.clients-logos{
+  display:flex;align-items:center;gap:40px;flex-wrap:wrap;flex:1;
+}
+.client-name{
+  font-family:var(--ff-display);font-size:16px;
+  color:rgba(245,242,238,0.2);
+  letter-spacing:-0.3px;transition:color 0.25s;cursor:default;
+}
+.client-name:hover{color:rgba(245,242,238,0.55);}
+
+/* SECTION SHARED */
+.section{padding:96px 48px;}
+.section-eyebrow{
+  display:flex;align-items:center;gap:12px;
+  font-size:11px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:24px;
+}
+.section-h{
+  font-family:var(--ff-display);
+  font-size:clamp(36px,4.5vw,58px);
+  line-height:1.05;letter-spacing:-0.5px;
+  color:var(--chalk);
+}
+.section-h em{font-style:italic;color:var(--gold);}
+.section-sub{
+  font-size:17px;color:var(--mist);
+  max-width:520px;line-height:1.75;font-weight:300;margin-top:16px;
+}
+
+/* SERVICES — editorial grid */
+.services-section{border-top:1px solid var(--rule);}
+.services-header{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  padding:96px 48px 64px;
+  border-bottom:1px solid var(--rule);
+}
+.services-header-left{border-right:1px solid var(--rule);padding-right:64px;}
+.services-header-right{padding-left:64px;display:flex;align-items:flex-end;}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);}
+.svc{
+  padding:48px 40px;
+  border-right:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  position:relative;overflow:hidden;
+  transition:background 0.3s;cursor:default;
+}
+.svc:nth-child(3n){border-right:none;}
+.svc:nth-child(4),.svc:nth-child(5),.svc:nth-child(6){border-bottom:none;}
+.svc:hover{background:rgba(201,169,110,0.04);}
+.svc-num{
+  font-family:var(--ff-mono);font-size:11px;font-weight:500;
+  color:var(--gold-dim);letter-spacing:2px;margin-bottom:32px;
+}
+.svc-icon{font-size:28px;margin-bottom:20px;display:block;}
+.svc-title{
+  font-family:var(--ff-display);font-size:22px;
+  color:var(--chalk);margin-bottom:12px;line-height:1.2;
+}
+.svc-desc{font-size:14px;color:var(--mist);line-height:1.75;font-weight:300;}
+.svc-arrow{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--gold);margin-top:24px;
+  opacity:0;transform:translateY(6px);
+  transition:all 0.3s;
+}
+.svc:hover .svc-arrow{opacity:1;transform:translateY(0);}
+
+/* WORK */
+.work-section{border-top:1px solid var(--rule);}
+.work-header{
+  padding:96px 48px 64px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  border-bottom:1px solid var(--rule);
+}
+.work-grid{display:grid;grid-template-columns:1fr 1fr;}
+.work-item{
+  border-right:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  overflow:hidden;cursor:pointer;
+  transition:all 0.3s;position:relative;
+}
+.work-item:nth-child(2n){border-right:none;}
+.work-item:nth-child(3),.work-item:nth-child(4){border-bottom:none;}
+.work-thumb{
+  height:260px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:var(--ink2);
+  transition:all 0.4s;
+}
+.work-item:hover .work-thumb{background:var(--ink3);}
+.work-thumb-inner{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  transition:transform 0.4s;
+}
+.work-item:hover .work-thumb-inner{transform:scale(1.04);}
+.work-glyph{
+  font-family:var(--ff-display);font-size:72px;
+  color:rgba(201,169,110,0.15);line-height:1;
+}
+.work-meta{padding:32px 40px;}
+.work-tag{
+  font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--gold-dim);margin-bottom:8px;
+}
+.work-title{
+  font-family:var(--ff-display);font-size:24px;
+  color:var(--chalk);margin-bottom:8px;
+}
+.work-desc{font-size:14px;color:var(--mist);font-weight:300;}
+.work-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--gold);margin-top:16px;
+  opacity:0;transform:translateX(-8px);transition:all 0.3s;
+}
+.work-item:hover .work-link{opacity:1;transform:translateX(0);}
+
+/* PROCESS */
+.process-section{
+  border-top:1px solid var(--rule);
+  background:var(--ink2);
+}
+.process-inner{padding:96px 48px;}
+.process-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:64px;}
+.process-step{
+  padding:40px 28px;
+  border-right:1px solid var(--rule);
+  position:relative;
+  transition:background 0.3s;cursor:default;
+}
+.process-step:last-child{border-right:none;}
+.process-step:hover{background:rgba(201,169,110,0.05);}
+.pstep-num{
+  font-family:var(--ff-mono);font-size:10px;font-weight:500;
+  color:var(--gold);letter-spacing:2px;margin-bottom:32px;
+}
+.pstep-title{
+  font-family:var(--ff-display);font-size:20px;
+  color:var(--chalk);margin-bottom:10px;
+}
+.pstep-desc{font-size:13px;color:var(--mist);line-height:1.7;font-weight:300;}
+
+/* TESTIMONIALS */
+.test-section{border-top:1px solid var(--rule);}
+.test-header{
+  padding:96px 48px 0;
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+.test-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  margin-top:56px;border-top:1px solid var(--rule);
+}
+.test-card{
+  padding:48px 40px;
+  border-right:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  transition:background 0.3s;cursor:default;
+}
+.test-card:last-child{border-right:none;}
+.test-quote-mark{
+  font-family:var(--ff-display);font-size:64px;
+  color:var(--gold);line-height:0.7;margin-bottom:24px;opacity:0.5;
+}
+.test-body{
+  font-family:var(--ff-display);font-style:italic;
+  font-size:18px;color:var(--chalk);
+  line-height:1.6;margin-bottom:32px;
+}
+.test-author-name{font-size:14px;font-weight:600;color:var(--chalk);letter-spacing:0.5px;}
+.test-author-role{font-size:12px;color:var(--mist);margin-top:2px;}
+.test-stars{color:var(--gold);font-size:12px;margin-bottom:16px;letter-spacing:3px;}
+
+/* FAQ */
+.faq-section{
+  border-top:1px solid var(--rule);
+  background:var(--ink2);
+}
+.faq-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+}
+.faq-left{
+  padding:96px 64px 96px 48px;
+  border-right:1px solid var(--rule);
+}
+.faq-right{padding:96px 48px 96px 64px;}
+.faq-item{border-bottom:1px solid var(--rule);}
+.faq-btn{
+  width:100%;text-align:left;background:none;border:none;
+  color:var(--chalk);padding:24px 0;
+  font-family:var(--ff-body);font-size:16px;font-weight:500;
+  cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  transition:color 0.2s;
+}
+.faq-btn:hover{color:var(--gold);}
+.faq-plus{
+  color:var(--gold-dim);font-size:20px;font-weight:300;
+  transition:transform 0.3s;flex-shrink:0;
+}
+.faq-item.open .faq-plus{transform:rotate(45deg);color:var(--gold);}
+.faq-ans{
+  max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s;
+  font-size:14px;color:var(--mist);line-height:1.8;font-weight:300;
+}
+.faq-item.open .faq-ans{max-height:180px;padding-bottom:24px;}
+
+/* CONTACT */
+.contact-section{border-top:1px solid var(--rule);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.contact-left{
+  padding:96px 64px 96px 48px;
+  border-right:1px solid var(--rule);
+}
+.contact-right{padding:96px 48px 96px 64px;}
+.contact-item{
+  display:flex;align-items:center;gap:16px;
+  padding:20px 0;border-bottom:1px solid var(--rule2);
+  font-size:14px;color:var(--mist);
+}
+.contact-item-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);min-width:80px;}
+.form-label{
+  display:block;font-size:10px;font-weight:600;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--gold-dim);margin-bottom:10px;
+}
+.form-field{margin-bottom:24px;}
+.form-inp{
+  width:100%;background:transparent;
+  border:none;border-bottom:1px solid var(--rule);
+  padding:12px 0;
+  color:var(--chalk);font-size:15px;
+  font-family:var(--ff-body);font-weight:300;
+  outline:none;transition:border-color 0.2s;
+  -webkit-appearance:none;appearance:none;
+}
+.form-inp:focus{border-bottom-color:var(--gold);}
+.form-inp::placeholder{color:rgba(154,150,144,0.4);}
+textarea.form-inp{min-height:100px;resize:none;}
+.form-select{
+  width:100%;background:transparent;
+  border:none;border-bottom:1px solid var(--rule);
+  padding:12px 0;color:var(--chalk);font-size:15px;
+  font-family:var(--ff-body);font-weight:300;
+  outline:none;transition:border-color 0.2s;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+}
+.form-select:focus{border-bottom-color:var(--gold);}
+.form-select option{background:var(--ink2);color:var(--chalk);}
+#formSuccess{display:none;text-align:center;padding:60px 20px;}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--rule);
+  background:var(--ink);
+}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:0;
+  border-bottom:1px solid var(--rule);
+}
+.footer-col{padding:56px 40px;border-right:1px solid var(--rule);}
+.footer-col:first-child{padding-left:48px;}
+.footer-col:last-child{border-right:none;}
+.footer-brand-name{font-family:var(--ff-display);font-size:24px;color:var(--chalk);margin-bottom:16px;}
+.footer-brand-name em{font-style:normal;color:var(--gold);}
+.footer-tagline{font-size:13px;color:var(--mist);line-height:1.7;max-width:260px;font-weight:300;}
+.footer-col-title{
+  font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--gold-dim);margin-bottom:24px;
+}
+.footer-link-list{list-style:none;}
+.footer-link-list li{margin-bottom:12px;}
+.footer-link-list a{
+  font-size:13px;color:rgba(245,242,238,0.35);
+  text-decoration:none;transition:color 0.2s;font-weight:300;
+}
+.footer-link-list a:hover{color:var(--chalk);}
+.footer-bottom{
+  padding:24px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-copy{font-size:12px;color:rgba(245,242,238,0.2);font-family:var(--ff-mono);}
+.footer-socials{display:flex;gap:0;}
+.social-link{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;
+  border:1px solid var(--rule);
+  color:var(--mist);font-size:13px;text-decoration:none;
+  transition:all 0.2s;
+  font-family:var(--ff-mono);
+}
+.social-link:hover{border-color:var(--gold);color:var(--gold);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.in{opacity:1;transform:none;}
+.reveal-d1{transition-delay:0.1s;}
+.reveal-d2{transition-delay:0.2s;}
+.reveal-d3{transition-delay:0.3s;}
+
+@media(max-width:860px){
+  .nav{padding:0 20px;}
+  .nav-items .nav-link{display:none;}
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero-left{padding:60px 24px 48px;}
+  .services-header{grid-template-columns:1fr;}
+  .services-header-left{border-right:none;padding-right:0;border-bottom:1px solid var(--rule);padding-bottom:40px;}
+  .services-header-right{padding-left:0;padding-top:32px;}
+  .services-grid{grid-template-columns:1fr 1fr;}
+  .svc:nth-child(2n){border-right:none;}
+  .svc:nth-child(3){border-right:1px solid var(--rule);}
+  .work-grid{grid-template-columns:1fr;}
+  .work-item{border-right:none;}
+  .process-steps{grid-template-columns:1fr 1fr;gap:0;}
+  .process-step{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .process-step:nth-child(2n){border-right:none;}
+  .process-step:last-child{border-bottom:none;}
+  .test-grid{grid-template-columns:1fr;}
+  .test-card{border-right:none;}
+  .faq-inner{grid-template-columns:1fr;}
+  .faq-left{border-right:none;padding:60px 24px 0;}
+  .faq-right{padding:0 24px 60px;}
+  .contact-grid{grid-template-columns:1fr;}
+  .contact-left{border-right:none;padding:60px 24px 40px;}
+  .contact-right{padding:0 24px 60px;}
+  .footer-top{grid-template-columns:1fr 1fr;}
+  .footer-col{border-bottom:1px solid var(--rule);}
+  .footer-bottom{flex-direction:column;gap:16px;padding:20px 24px;}
+  .section,.services-header,.work-header,.process-inner,.test-header,.clients{padding-left:24px;padding-right:24px;}
+}
+</style>
+</head>
+<body>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Vellum — a premium digital atelier offering web design, development, and branding for high-value clients</h2>
+
+<!-- NAV -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-wordmark">Vellu<em>m</em></div>
+  <div class="nav-items">
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#work" class="nav-link">Work</a>
+    <a href="#process" class="nav-link">Process</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+    <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Begin</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<main>
+<section class="hero" aria-label="Hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div>
+        <div class="hero-eyebrow reveal"><span class="eyebrow-line"></span>Digital Atelier · Est. 2019</div>
+        <h1 class="hero-h1 reveal">We craft<br/>digital work<br/>that <em>endures.</em></h1>
+        <p class="hero-body reveal reveal-d1">For founders and teams who understand that a website is not a cost — it is your highest-leverage asset. We build for permanence.</p>
+        <div class="hero-actions reveal reveal-d2">
+          <a href="#contact" class="btn-gold">Start a project ↗</a>
+          <a href="#work" class="btn-ghost">View our work</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right" aria-hidden="true">
+      <div class="hero-stat-stack">
+        <div class="hero-stat">
+          <div class="stat-val">153<em>+</em></div>
+          <div class="stat-key">Projects delivered</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-val">$47<em>M</em></div>
+          <div class="stat-key">Client revenue influenced</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-val">98<em>%</em></div>
+          <div class="stat-key">Client satisfaction score</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-val">6<em>wk</em></div>
+          <div class="stat-key">Average delivery time</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-ticker" aria-label="Live project activity">
+    <div class="ticker-label"><span class="ticker-dot"></span>Live projects</div>
+    <div class="ticker-track-wrap">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<div class="clients reveal" aria-label="Client logos">
+  <span class="clients-label">Selected clients</span>
+  <div class="clients-logos" id="clientLogos"></div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" class="services-section" aria-label="Services">
+  <div class="services-header">
+    <div class="services-header-left reveal">
+      <div class="section-eyebrow"><span class="eyebrow-line"></span>What we do</div>
+      <h2 class="section-h">Craft over<br/>commodity.</h2>
+    </div>
+    <div class="services-header-right reveal reveal-d1">
+      <p class="section-sub">We work at the intersection of brand, experience, and engineering — producing work that performs as well as it looks.</p>
+    </div>
+  </div>
+  <div class="services-grid" id="servicesGrid"></div>
+</section>
+
+<!-- WORK -->
+<section id="work" class="work-section" aria-label="Featured work">
+  <div class="work-header reveal">
+    <div>
+      <div class="section-eyebrow"><span class="eyebrow-line"></span>Selected work</div>
+      <h2 class="section-h">Built to<br/><em>convert.</em></h2>
+    </div>
+    <a href="#contact" class="btn-ghost">All case studies ↗</a>
+  </div>
+  <div class="work-grid" id="workGrid"></div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="process-section" aria-label="Our process">
+  <div class="process-inner">
+    <div class="reveal">
+      <div class="section-eyebrow"><span class="eyebrow-line"></span>How we work</div>
+      <h2 class="section-h">Rigorous by<br/>design.</h2>
+    </div>
+    <div class="process-steps" id="processSteps"></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="test-section" aria-label="Client testimonials">
+  <div class="test-header reveal">
+    <div>
+      <div class="section-eyebrow"><span class="eyebrow-line"></span>Clients</div>
+      <h2 class="section-h">Trust earned,<br/>not claimed.</h2>
+    </div>
+  </div>
+  <div class="test-grid" id="testGrid"></div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="faq-section" aria-label="Frequently asked questions">
+  <div class="faq-inner">
+    <div class="faq-left reveal">
+      <div class="section-eyebrow"><span class="eyebrow-line"></span>FAQ</div>
+      <h2 class="section-h" style="font-size:clamp(32px,3.5vw,48px);">Questions,<br/><em>answered.</em></h2>
+      <p class="section-sub" style="margin-top:24px;">Still unsure? Schedule a free 30-minute call — no pitch, just a conversation.</p>
+      <a href="#contact" class="btn-gold" style="margin-top:36px;display:inline-flex;">Book a call ↗</a>
+    </div>
+    <div class="faq-right">
+      <div id="faqList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section" aria-label="Contact">
+  <div class="contact-grid">
+    <div class="contact-left reveal">
+      <div class="section-eyebrow"><span class="eyebrow-line"></span>Get in touch</div>
+      <h2 class="section-h" style="font-size:clamp(32px,3.5vw,52px);">Ready to build<br/>something<br/><em>extraordinary?</em></h2>
+      <p class="section-sub" style="margin-top:24px;margin-bottom:40px;">We respond within 4 hours on business days. Every engagement starts with a discovery conversation — no obligation.</p>
+      <div>
+        <div class="contact-item"><span class="contact-item-label">Email</span>hello@vellum.studio</div>
+        <div class="contact-item"><span class="contact-item-label">Phone</span>+1 (415) 000-0000</div>
+        <div class="contact-item"><span class="contact-item-label">Location</span>San Francisco · Remote-first</div>
+        <div class="contact-item"><span class="contact-item-label">Response</span>Under 4 hours</div>
+      </div>
+    </div>
+    <div class="contact-right reveal reveal-d1">
+      <div id="formSuccess">
+        <div style="font-family:var(--ff-display);font-size:48px;color:var(--gold);margin-bottom:16px;">✓</div>
+        <h3 style="font-family:var(--ff-display);font-size:28px;margin-bottom:8px;">Message received.</h3>
+        <p style="color:var(--mist);font-size:15px;">Expect a reply within 4 hours.</p>
+      </div>
+      <form id="contactForm" onsubmit="handleForm(event)" novalidate>
+        <div class="form-field">
+          <label class="form-label" for="name">Full name</label>
+          <input class="form-inp" type="text" id="name" name="name" placeholder="Alexandra Chen" required autocomplete="name"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="email">Email address</label>
+          <input class="form-inp" type="email" id="email" name="email" placeholder="alex@company.com" required autocomplete="email"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="company">Company</label>
+          <input class="form-inp" type="text" id="company" name="company" placeholder="Acme Corp" autocomplete="organization"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="budget">Budget range</label>
+          <select class="form-select" id="budget" name="budget">
+            <option value="">Select a range</option>
+            <option>$15k – $30k</option>
+            <option>$30k – $60k</option>
+            <option>$60k – $100k</option>
+            <option>$100k +</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="message">Tell us about your project</label>
+          <textarea class="form-inp" id="message" name="message" placeholder="What are you building, and what outcome matters most?" rows="4"></textarea>
+        </div>
+        <button type="submit" class="btn-gold" style="width:100%;justify-content:center;font-size:13px;">Send message ↗</button>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer aria-label="Site footer">
+  <div class="footer-top">
+    <div class="footer-col">
+      <div class="footer-brand-name">Vellu<em>m</em></div>
+      <p class="footer-tagline">A digital atelier for ambitious brands. We build websites that are precise, purposeful, and built to last.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Services</div>
+      <ul class="footer-link-list">
+        <li><a href="#">Web Design</a></li>
+        <li><a href="#">UI/UX Design</a></li>
+        <li><a href="#">Development</a></li>
+        <li><a href="#">Branding</a></li>
+        <li><a href="#">E-commerce</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-link-list">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Work</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Journal</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Follow</div>
+      <ul class="footer-link-list">
+        <li><a href="#">Twitter / X</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Dribbble</a></li>
+        <li><a href="#">Awwwards</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Vellum Studio — All rights reserved</span>
+    <div class="footer-socials">
+      <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+      <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+      <a href="#" class="social-link" aria-label="Dribbble">dr</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const TICKER_ITEMS=[
+  {label:'Meridian Capital',status:'Design Phase'},
+  {label:'Orbit SaaS',status:'Development'},
+  {label:'House of Lune',status:'Brand Identity'},
+  {label:'Vantage AI',status:'Launch Prep'},
+  {label:'Arco E-commerce',status:'Discovery'},
+  {label:'Solis Finance',status:'UI Design'},
+];
+const CLIENTS=['Stripe','Linear','Vercel','Notion','Figma','Shopify','Webflow'];
+const SERVICES=[
+  {num:'01',icon:'◻',title:'Website Design',desc:'Conversion-focused design rooted in your audience\'s psychology. Not just beautiful — intentional.'},
+  {num:'02',icon:'◈',title:'UI / UX Design',desc:'Interfaces built on research and tested with real users. Every interaction earns its place.'},
+  {num:'03',icon:'⚡',title:'Web Development',desc:'Production-grade code: performant, accessible, and built to scale without accumulating debt.'},
+  {num:'04',icon:'◎',title:'E-commerce',desc:'Stores architected for conversion. From product discovery to checkout, every step is deliberate.'},
+  {num:'05',icon:'◇',title:'Branding',desc:'Brand systems that hold — across digital, print, and whatever comes next.'},
+  {num:'06',icon:'◉',title:'Strategy',desc:'Digital strategy grounded in data and your actual business model, not generic best practices.'},
+];
+const WORK=[
+  {glyph:'M',tag:'Series B Fintech',title:'Meridian Capital',desc:'Full rebrand and web platform that anchored a $24M raise. 3× increase in inbound leads post-launch.'},
+  {glyph:'O',tag:'SaaS Platform',title:'Orbit Analytics',desc:'End-to-end product design for a B2B analytics platform. Reduced onboarding drop-off by 61%.'},
+  {glyph:'L',tag:'Luxury E-commerce',title:'House of Lune',desc:'Bespoke luxury storefront serving 80k+ monthly visitors. Average order value up 2.4×.'},
+  {glyph:'V',tag:'AI Startup',title:'Vantage AI',desc:'Zero-to-one brand and marketing site for an AI data platform. Sold to enterprise in 14 months.'},
+];
+const STEPS=[
+  {num:'01',title:'Discovery',desc:'We map your goals, audience, competitors, and constraints. Nothing is assumed.'},
+  {num:'02',title:'Strategy',desc:'Sitemap, messaging hierarchy, and a content architecture built for your conversion path.'},
+  {num:'03',title:'Design',desc:'High-fidelity prototypes with interactive states — reviewed, refined, approved.'},
+  {num:'04',title:'Build',desc:'Clean, documented code. Performance and accessibility are requirements, not afterthoughts.'},
+  {num:'05',title:'Launch',desc:'Thorough QA, staged rollout, and a 30-day support window. We stay until it\'s right.'},
+];
+const TESTIMONIALS=[
+  {q:'"Vellum didn\'t just redesign our site — they redesigned how we think about our market position. The results were immediate."',name:'James Okafor',role:'CEO, Meridian Capital'},
+  {q:'"The attention to craft is unlike anything I\'ve experienced from an agency. Every pixel has a reason. Our users notice."',name:'Sarah Lin',role:'CPO, Orbit Analytics'},
+  {q:'"They pushed back when our instincts were wrong and brought evidence. That\'s rare. The site outperforms every forecast."',name:'Marcus Webb',role:'Founder, Vantage AI'},
+];
+const FAQS=[
+  {q:'What is your minimum project size?',a:'Our engagements typically start at $20,000 for a focused website project. Full brand-and-web engagements usually range from $40k–$100k depending on scope and complexity.'},
+  {q:'How long does a project take?',a:'A focused web project takes 5–8 weeks. Larger brand and platform engagements are typically 10–16 weeks. You\'ll receive a precise timeline in your proposal.'},
+  {q:'Do you work with international clients?',a:'Yes. Around 40% of our clients are based outside North America. All project management is handled asynchronously with structured weekly touchpoints.'},
+  {q:'What do you need to get started?',a:'A brief description of your goals and a discovery call. We guide you through everything. The clearer your business outcome, the better our output.'},
+  {q:'Do you offer post-launch support?',a:'Yes — most clients move to a monthly retainer for ongoing optimisation, content updates, and feature development after launch.'},
+  {q:'Can you match our existing brand guidelines?',a:'Absolutely. We work within existing brand systems and frequently extend them with new digital-first guidelines tailored for web performance.'},
+];
+
+function buildTicker(){
+  const track=document.getElementById('tickerTrack');
+  const doubled=[...TICKER_ITEMS,...TICKER_ITEMS];
+  track.innerHTML=doubled.map(t=>`<div class="ticker-item"><span>▸</span>${t.label} — ${t.status}</div>`).join('');
+}
+function buildClients(){
+  const el=document.getElementById('clientLogos');
+  el.innerHTML=CLIENTS.map(c=>`<div class="client-name">${c}</div>`).join('');
+}
+function buildServices(){
+  const el=document.getElementById('servicesGrid');
+  el.innerHTML=SERVICES.map(s=>`
+    <div class="svc">
+      <div class="svc-num">${s.num}</div>
+      <span class="svc-icon" aria-hidden="true">${s.icon}</span>
+      <div class="svc-title">${s.title}</div>
+      <div class="svc-desc">${s.desc}</div>
+      <div class="svc-arrow">Learn more →</div>
+    </div>`).join('');
+}
+function buildWork(){
+  const el=document.getElementById('workGrid');
+  el.innerHTML=WORK.map(w=>`
+    <div class="work-item">
+      <div class="work-thumb" aria-hidden="true">
+        <div class="work-thumb-inner">
+          <div class="work-glyph">${w.glyph}</div>
+        </div>
+      </div>
+      <div class="work-meta">
+        <div class="work-tag">${w.tag}</div>
+        <div class="work-title">${w.title}</div>
+        <div class="work-desc">${w.desc}</div>
+        <div class="work-link">View case study →</div>
+      </div>
+    </div>`).join('');
+}
+function buildProcess(){
+  const el=document.getElementById('processSteps');
+  el.innerHTML=STEPS.map(s=>`
+    <div class="process-step reveal">
+      <div class="pstep-num">${s.num}</div>
+      <div class="pstep-title">${s.title}</div>
+      <div class="pstep-desc">${s.desc}</div>
+    </div>`).join('');
+}
+function buildTestimonials(){
+  const el=document.getElementById('testGrid');
+  el.innerHTML=TESTIMONIALS.map(t=>`
+    <div class="test-card reveal">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-quote-mark">"</div>
+      <div class="test-body">${t.q}</div>
+      <div class="test-author-name">${t.name}</div>
+      <div class="test-author-role">${t.role}</div>
+    </div>`).join('');
+}
+function buildFAQ(){
+  const el=document.getElementById('faqList');
+  el.innerHTML=FAQS.map((f,i)=>`
+    <div class="faq-item" id="fi${i}">
+      <button class="faq-btn" onclick="toggleFAQ(${i})" aria-expanded="false" aria-controls="fa${i}">
+        ${f.q}<span class="faq-plus" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-ans" id="fa${i}" role="region">${f.a}</div>
+    </div>`).join('');
+}
+function toggleFAQ(i){
+  const item=document.getElementById('fi'+i);
+  const btn=item.querySelector('.faq-btn');
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(el=>{el.classList.remove('open');el.querySelector('.faq-btn').setAttribute('aria-expanded','false');});
+  if(!wasOpen){item.classList.add('open');btn.setAttribute('aria-expanded','true');}
+}
+function handleForm(e){
+  e.preventDefault();
+  document.getElementById('contactForm').style.display='none';
+  document.getElementById('formSuccess').style.display='block';
+}
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');obs.unobserve(en.target);}});
+  },{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+
+buildTicker();buildClients();buildServices();buildWork();buildProcess();buildTestimonials();buildFAQ();
+setTimeout(initReveal,100);
+</script>
+</body>
+</html>
